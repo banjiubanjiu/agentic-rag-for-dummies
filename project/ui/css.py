@@ -1,274 +1,338 @@
 custom_css = """
     /* ============================================
-       MAIN CONTAINER
+       MODERN CLEAN THEME - 高对比度清爽配色
        ============================================ */
-    .progress-text { 
+
+    /* 进度条隐藏 */
+    .progress-text {
         display: none !important;
     }
-    
-    .gradio-container { 
-        max-width: 1000px !important;
+
+    /* ============================================
+       主容器 - 浅色背景
+       ============================================ */
+    .gradio-container {
+        max-width: 1200px !important;
         width: 100% !important;
         margin: 0 auto !important;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-        background: #0f0f0f !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+        background: #f8fafc !important;
     }
-    
+
     /* ============================================
-       TABS
+       标签页 - 现代风格
        ============================================ */
-    /* Tab buttons - normal state */
     button[role="tab"] {
-        color: #a3a3a3 !important;
-        border-bottom: 2px solid transparent !important;
-        border-radius: 0 !important;
-        transition: all 0.2s ease !important;
+        color: #64748b !important;
         background: transparent !important;
+        border: none !important;
+        border-bottom: 3px solid transparent !important;
+        border-radius: 8px 8px 0 0 !important;
+        padding: 12px 24px !important;
+        font-weight: 600 !important;
+        font-size: 15px !important;
+        transition: all 0.25s ease !important;
     }
-    
+
     button[role="tab"]:hover {
-        color: #e5e5e5 !important;
+        color: #3b82f6 !important;
+        background: rgba(59, 130, 246, 0.08) !important;
     }
-    
-    /* Selected tab - white text and white underline */
+
     button[role="tab"][aria-selected="true"] {
-        color: #ffffff !important;
-        border-bottom: 2px solid #ffffff !important;
-        border-radius: 0 !important;
-        background: transparent !important;
+        color: #2563eb !important;
+        background: white !important;
+        border-bottom: 3px solid #2563eb !important;
     }
-    
-    /* Remove orange underline from tab container */
+
+    /* 标签页容器 */
     .tabs {
-        border-bottom: none !important;
-        border-radius: 0 !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        background: white !important;
     }
-    
-    .tab-nav {
-        border-bottom: 1px solid #3f3f3f !important;
-        border-radius: 0 !important;
-    }
-    
-    /* Remove any pseudo-elements that might create lines */
-    button[role="tab"]::before,
-    button[role="tab"]::after,
-    .tabs::before,
-    .tabs::after,
-    .tab-nav::before,
-    .tab-nav::after {
-        display: none !important;
-        content: none !important;
-        border-radius: 0 !important;
-    }
-    
-    /* Center document management tab */
+
+    /* 文档管理标签页居中 */
     #doc-management-tab {
-        max-width: 500px !important;
+        max-width: 800px !important;
         margin: 0 auto !important;
     }
-    
+
     /* ============================================
-       BUTTONS
+       按钮样式 - 现代渐变
        ============================================ */
     button {
-        border-radius: 8px !important;
-        border: none !important;
-        font-weight: 500 !important;
-        transition: all 0.2s ease !important;
-        box-shadow: none !important;
-    }
-    
-    /* Primary button */
-    .primary {
-        background: #3b82f6 !important;
-        color: white !important;
-    }
-    
-    .primary:hover {
-        background: #2563eb !important;
-        transform: translateY(-1px) !important;
-    }
-    
-    /* Stop/danger button */
-    .stop {
-        background: #ef4444 !important;
-        color: white !important;
-    }
-    
-    .stop:hover {
-        background: #dc2626 !important;
-        transform: translateY(-1px) !important;
-    }
-    
-    /* ============================================
-       CHAT INPUT BOX - MODIFIED
-       ============================================ */
-    /* Target chat input textarea - more aggressive selectors */
-    textarea[placeholder="Type a message..."],
-    textarea[data-testid*="textbox"]:not(#file-list-box textarea) {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-    
-    textarea[placeholder="Type a message..."]:focus {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-    }
-    
-    /* Target the wrapper/container of chat input */
-    .gr-text-input:has(textarea[placeholder="Type a message..."]),
-    [class*="chatbot"] + * [data-testid="textbox"],
-    form:has(textarea[placeholder="Type a message..."]) > div {
-        background: transparent !important;
-        border: none !important;
-        gap: 12px !important;
-    }
-    
-    /* Remove background from submit button in chat */
-    form:has(textarea[placeholder="Type a message..."]) button,
-    [class*="chatbot"] ~ * button[type="submit"] {
-        background: transparent !important;
-        border: none !important;
-        padding: 8px !important;
-    }
-    
-    form:has(textarea[placeholder="Type a message..."]) button:hover {
-        background: rgba(59, 130, 246, 0.1) !important;
-    }
-    
-    /* Add spacing to the form container */
-    form:has(textarea[placeholder="Type a message..."]) {
-        gap: 12px !important;
-        display: flex !important;
-    }
-    
-    /* ============================================
-       FILE UPLOAD - FIXED HEIGHT AND TEXT COLOR
-       ============================================ */
-    .file-preview, 
-    [data-testid="file-upload"] {
-        background: #1a1a1a !important;
-        border: 1px solid #3f3f3f !important;
-        border-radius: 5px !important;
-        color: #ffffff !important;
-        min-height: 200px !important;
-    }
-    
-    .file-preview:hover, 
-    [data-testid="file-upload"]:hover {
-        border-color: #3b82f6 !important;
-        background: #1f1f1f !important;
-    }
-    
-    /* Text inside file upload - white color */
-    .file-preview *,
-    [data-testid="file-upload"] * {
-        color: #ffffff !important;
-    }
-    
-    /* Hide file upload label */
-    .file-preview .label,
-    [data-testid="file-upload"] .label {
-        display: none !important;
-    }
-    
-    /* ============================================
-       INPUTS & TEXTAREAS
-       ============================================ */
-    input, 
-    textarea {
-        background: #1a1a1a !important;
-        border: 1px solid #3f3f3f !important;
         border-radius: 10px !important;
-        color: #e5e5e5 !important;
-        transition: border-color 0.2s ease !important;
+        border: none !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
     }
-    
-    input:focus, 
-    textarea:focus {
+
+    button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.12) !important;
+    }
+
+    /* 主要按钮 - 蓝色渐变 */
+    .primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+        color: white !important;
+        padding: 12px 28px !important;
+        font-size: 15px !important;
+    }
+
+    .primary:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3) !important;
+    }
+
+    /* 危险按钮 - 红色渐变 */
+    .stop {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        color: white !important;
+        padding: 12px 28px !important;
+        font-size: 15px !important;
+    }
+
+    .stop:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+        box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3) !important;
+    }
+
+    /* 次要按钮 */
+    button:not(.primary):not(.stop) {
+        background: white !important;
+        color: #475569 !important;
+        border: 2px solid #cbd5e1 !important;
+        padding: 12px 28px !important;
+        font-size: 15px !important;
+    }
+
+    button:not(.primary):not(.stop):hover {
+        background: #f8fafc !important;
+        border-color: #94a3b8 !important;
+        color: #1e293b !important;
+    }
+
+    /* ============================================
+       输入框和文本框 - 清爽白色
+       ============================================ */
+    input, textarea {
+        background: white !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        color: #1e293b !important;
+        font-size: 15px !important;
+        padding: 12px 16px !important;
+        transition: all 0.2s ease !important;
+    }
+
+    input:focus, textarea:focus {
         border-color: #3b82f6 !important;
         outline: none !important;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+        background: #fafbfc !important;
     }
-    
+
     textarea[readonly] {
-        background: #1a1a1a !important;
-        color: #a3a3a3 !important;
+        background: #f1f5f9 !important;
+        color: #334155 !important;
+        border-color: #cbd5e1 !important;
     }
-    
+
     /* ============================================
-       FILE LIST BOX
+       文件上传区 - 现代卡片风格
+       ============================================ */
+    .file-preview,
+    [data-testid="file-upload"] {
+        background: white !important;
+        border: 2px dashed #cbd5e1 !important;
+        border-radius: 16px !important;
+        min-height: 200px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .file-preview:hover,
+    [data-testid="file-upload"]:hover {
+        border-color: #3b82f6 !important;
+        background: #f8fafc !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1) !important;
+    }
+
+    /* 文件上传文字 */
+    .file-preview *,
+    [data-testid="file-upload"] * {
+        color: #475569 !important;
+    }
+
+    .file-preview:hover *,
+    [data-testid="file-upload"]:hover * {
+        color: #3b82f6 !important;
+    }
+
+    /* ============================================
+       文件列表框
        ============================================ */
     #file-list-box {
-        background: #1a1a1a !important;
-        border: 1px solid #3f3f3f !important;
-        border-radius: 5px !important;
-        padding: 10px !important;
+        background: white !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 12px !important;
+        padding: 16px !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
     }
-    
+
     #file-list-box textarea {
         background: transparent !important;
         border: none !important;
-        color: #e5e5e5 !important;
+        color: #334155 !important;
         padding: 0 !important;
+        font-size: 14px !important;
+        line-height: 1.8 !important;
     }
-    
+
     /* ============================================
-       CHATBOT
+       聊天输入框
+       ============================================ */
+    textarea[placeholder="Type a message..."] {
+        background: white !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 24px !important;
+        padding: 14px 20px !important;
+        font-size: 15px !important;
+        color: #1e293b !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04) !important;
+    }
+
+    textarea[placeholder="Type a message..."]:focus {
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1), 0 2px 8px rgba(0,0,0,0.04) !important;
+    }
+
+    /* 聊天提交按钮 */
+    form:has(textarea[placeholder="Type a message..."]) button[type="submit"] {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 44px !important;
+        height: 44px !important;
+        padding: 0 !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2) !important;
+    }
+
+    form:has(textarea[placeholder="Type a message..."]) button[type="submit"]:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3) !important;
+    }
+
+    /* ============================================
+       聊天气泡 - 现代气泡风格
        ============================================ */
     .chatbot {
-        border-radius: 5px !important;
-        background: #1a1a1a !important;
+        background: transparent !important;
         border: none !important;
     }
-    
+
     .message {
-        border-radius: 10px !important;
-        width: fit-content !important;
+        border-radius: 20px !important;
+        padding: 14px 20px !important;
+        max-width: 80% !important;
+        font-size: 15px !important;
+        line-height: 1.6 !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06) !important;
     }
-    
+
     .message.user {
-        background: #3b82f6 !important;
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
         color: white !important;
+        margin-left: auto !important;
+        border-bottom-right-radius: 6px !important;
     }
-    
+
     .message.bot {
-        background: #1f1f1f !important;
-        color: #e5e5e5 !important;
-        border: 1px solid #3f3f3f !important;
+        background: white !important;
+        color: #1e293b !important;
+        border: 2px solid #e2e8f0 !important;
+        border-bottom-left-radius: 6px !important;
     }
-    
+
     /* ============================================
-       PROGRESS BAR
+       标题文字
+       ============================================ */
+    h1, h2, h3, h4, h5, h6 {
+        color: #0f172a !important;
+        font-weight: 700 !important;
+    }
+
+    h1 { font-size: 32px !important; }
+    h2 { font-size: 26px !important; }
+    h3 { font-size: 22px !important; }
+
+    /* Markdown内容 */
+    .markdown {
+        color: #334155 !important;
+        line-height: 1.7 !important;
+    }
+
+    /* ============================================
+       进度条
        ============================================ */
     .progress-bar-wrap {
         border-radius: 10px !important;
         overflow: hidden !important;
-        background: #1a1a1a !important;
+        background: #e2e8f0 !important;
+        height: 8px !important;
     }
 
     .progress-bar {
         border-radius: 10px !important;
-        background: #3b82f6 !important;
+        background: linear-gradient(90deg, #3b82f6 0%, #2563eb 100%) !important;
+        height: 100% !important;
+        transition: width 0.3s ease !important;
     }
-    
+
     /* ============================================
-       TYPOGRAPHY
-       ============================================ */
-    h1, h2, h3, h4, h5, h6 {
-        color: #e5e5e5 !important;
-    }
-    
-    /* ============================================
-       GLOBAL OVERRIDES
+       全局优化
        ============================================ */
     * {
         box-shadow: none !important;
     }
-    
+
+    /* 隐藏底部Gradio标志 */
     footer {
-        visibility: hidden;
+        visibility: hidden !important;
+        height: 0 !important;
+    }
+
+    /* 滚动条美化 */
+    ::-webkit-scrollbar {
+        width: 10px !important;
+        height: 10px !important;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: #f1f5f9 !important;
+        border-radius: 10px !important;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #cbd5e1 !important;
+        border-radius: 10px !important;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8 !important;
+    }
+
+    /* ============================================
+       卡片和容器
+       ============================================ */
+    .gradio-container {
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+    }
+
+    /* 增加卡片阴影 */
+    [class*="container"] {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.06) !important;
     }
 """

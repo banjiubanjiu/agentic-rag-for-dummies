@@ -30,26 +30,77 @@ def analyze_and_rewrite_query(state: State, llm):
 
     context_section = (f"Conversation Context:\n{conversation_summary}\n" if conversation_summary.strip() else "") + f"User Query:\n{last_message.content}\n"
 
-    llm_with_structure = llm.with_config(temperature=0.1).with_structured_output(QueryAnalysis)
-    response = llm_with_structure.invoke([SystemMessage(content=get_query_analysis_prompt())] + [HumanMessage(content=context_section)])
+    # 手动JSON方式：让LLM返回JSON文本
+    json_prompt = get_query_analysis_prompt() + """
 
-    if len(response.questions) > 0 and response.is_clear:
-        delete_all = [
-            RemoveMessage(id=m.id)
-            for m in state["messages"]
-            if not isinstance(m, SystemMessage)
-        ]
+IMPORTANT: You must respond with a valid JSON object in this exact format:
+{
+  "is_clear": true,
+  "questions": ["question1", "question2"],
+  "clarification_needed": "explanation if unclear"
+}
+
+Do not include any other text, only the JSON."""
+
+    try:
+        response = llm.with_config(temperature=0.1).invoke(
+            [SystemMessage(content=json_prompt)] +
+            [HumanMessage(content=context_section)]
+        )
+
+        # 手动解析JSON
+        import json
+        response_text = response.content.strip()
+
+        # 尝试提取JSON（处理可能的markdown代码块）
+        if "```json" in response_text:
+            response_text = response_text.split("```json")[1].split("```")[0].strip()
+        elif "```" in response_text:
+            response_text = response_text.split("```")[1].split("```")[0].strip()
+
+        parsed = json.loads(response_text)
+
+        if len(parsed.get("questions", [])) > 0 and parsed.get("is_clear", False):
+            delete_all = [
+                RemoveMessage(id=m.id)
+                for m in state["messages"]
+                if not isinstance(m, SystemMessage)
+            ]
+            return {
+                "questionIsClear": True,
+                "messages": delete_all,
+                "originalQuery": last_message.content,
+                "rewrittenQuestions": parsed["questions"]
+            }
+        else:
+            clarification = parsed.get("clarification_needed", "")
+            if not clarification or len(clarification.strip()) < 10:
+                clarification = "I need more information to understand your question."
+            return {
+                "questionIsClear": False,
+                "messages": [AIMessage(content=clarification)]
+            }
+
+    except json.JSONDecodeError as e:
+        print(f"❌ JSON解析错误: {e}")
+        print(f"LLM返回: {response.content[:200]}...")
+        # 兜底：使用原始问题
         return {
             "questionIsClear": True,
-            "messages": delete_all,
+            "messages": [],
             "originalQuery": last_message.content,
-            "rewrittenQuestions": response.questions
+            "rewrittenQuestions": [last_message.content]
         }
-    else:
-        clarification = response.clarification_needed if (response.clarification_needed and len(response.clarification_needed.strip()) > 10) else "I need more information to understand your question."
+    except Exception as e:
+        print(f"❌ 查询分析错误: {e}")
+        import traceback
+        traceback.print_exc()
+        # 兜底：使用原始问题
         return {
-            "questionIsClear": False,
-            "messages": [AIMessage(content=clarification)]
+            "questionIsClear": True,
+            "messages": [],
+            "originalQuery": last_message.content,
+            "rewrittenQuestions": [last_message.content]
         }
 
 def human_input_node(state: State):

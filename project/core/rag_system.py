@@ -1,5 +1,6 @@
 import uuid
-from langchain_ollama import ChatOllama
+import os
+from langchain_community.chat_models import ChatZhipuAI
 import config
 from db.vector_db_manager import VectorDbManager
 from db.parent_store_manager import ParentStoreManager
@@ -20,8 +21,14 @@ class RAGSystem:
     def initialize(self):
         self.vector_db.create_collection(self.collection_name)
         collection = self.vector_db.get_collection(self.collection_name)
-        
-        llm = ChatOllama(model=config.LLM_MODEL, temperature=config.LLM_TEMPERATURE)
+
+        # 使用智谱AI
+        api_key = os.getenv("ZHIPUAI_API_KEY", "your-zhipuai-api-key-here")
+        llm = ChatZhipuAI(
+            model="glm-4-flash",  # 或者 glm-4-plus, glm-4-air
+            temperature=config.LLM_TEMPERATURE,
+            api_key=api_key
+        )
         tools = ToolFactory(collection).create_tools()
         self.agent_graph = create_agent_graph(llm, tools)
         

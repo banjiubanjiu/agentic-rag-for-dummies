@@ -10,13 +10,21 @@ class ToolFactory:
     
     def _search_child_chunks(self, query: str, k: int) -> List[dict]:
         """Search for the top K most relevant child chunks.
-        
+
         Args:
             query: Search query string
             k: Number of results to return
         """
         try:
-            results = self.collection.similarity_search(query, k=k, score_threshold=0.7)
+            # 降低相似度阈值，从0.7降到0.3，更容易找到相关内容
+            results = self.collection.similarity_search(query, k=k, score_threshold=0.3)
+
+            if not results:
+                print(f"⚠️ 未找到相似度>0.3的结果，尝试无阈值检索...")
+                # 兜底：如果阈值过滤后没有结果，去掉阈值重新检索
+                results = self.collection.similarity_search(query, k=k)
+
+            print(f"✅ 检索到 {len(results)} 个相关片段")
             return [
                 {
                     "content": doc.page_content,
@@ -26,7 +34,7 @@ class ToolFactory:
                 for doc in results
             ]
         except Exception as e:
-            print(f"Error searching child chunks: {e}")
+            print(f"❌ 检索错误: {e}")
             return []
     
     def _retrieve_parent_chunks(self, parent_ids: List[str]) -> List[dict]:

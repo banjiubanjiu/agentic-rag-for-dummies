@@ -1,1 +1,22 @@
 .DS_Store
+
+# Test directory
+test/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# Project specific
+project/qdrant_db/
+project/parent_store/
+project/markdown_docs/
+*.pdf
+*.md
+!README.md
