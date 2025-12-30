@@ -1,7 +1,7 @@
 from pathlib import Path
 import shutil
 import config
-from util import pdfs_to_markdowns
+from util import pdfs_to_markdowns, document_to_markdown
 
 class DocumentManager:
 
@@ -11,50 +11,86 @@ class DocumentManager:
         self.markdown_dir.mkdir(parents=True, exist_ok=True)
         
     def add_documents(self, document_paths, progress_callback=None):
+        """Add documents in multiple formats: PDF, DOCX, TXT, HTML, MD, etc."""
         if not document_paths:
             return 0, 0
-            
+
+        # Supported file formats
+        supported_formats = [
+            ".pdf",      # PDF files
+            ".md",       # Markdown files
+            ".txt",      # Plain text files
+            ".docx",     # Word documents
+            ".doc",      # Legacy Word documents
+            ".html",     # HTML files
+            ".htm",      # HTML files
+            ".xlsx",     # Excel files
+            ".xls",      # Legacy Excel files
+            ".pptx",     # PowerPoint files
+            ".ppt",      # Legacy PowerPoint files
+            ".csv",      # CSV files
+            ".json",     # JSON files
+            ".rst",      # reStructuredText files
+            ".rtf",      # Rich Text Format
+            ".odt",      # OpenDocument Text
+            ".epub",     # EPUB e-books
+        ]
+
         document_paths = [document_paths] if isinstance(document_paths, str) else document_paths
-        document_paths = [p for p in document_paths if p and Path(p).suffix.lower() in [".pdf", ".md"]]
-        
+        document_paths = [p for p in document_paths if p and Path(p).suffix.lower() in supported_formats]
+
         if not document_paths:
             return 0, 0
-            
+
         added = 0
         skipped = 0
-            
+
         for i, doc_path in enumerate(document_paths):
             if progress_callback:
                 progress_callback((i + 1) / len(document_paths), f"Processing {Path(doc_path).name}")
-                
+
             doc_name = Path(doc_path).stem
             md_path = self.markdown_dir / f"{doc_name}.md"
-            
+
             if md_path.exists():
                 skipped += 1
                 continue
-                
-            try:            
-                if Path(doc_path).suffix.lower() == ".md":
+
+            try:
+                file_extension = Path(doc_path).suffix.lower()
+
+                # Handle different file formats
+                if file_extension == ".md":
+                    # Markdown files: copy directly
                     shutil.copy(doc_path, md_path)
+                elif file_extension == ".pdf":
+                    # PDF files: use PyMuPDF4LLM (preserves structure better)
+                    pdfs_to_markdowns(str(doc_path), overwrite=False)
                 else:
-                    pdfs_to_markdowns(str(doc_path), overwrite=False)            
+                    # All other formats: use Unstructured
+                    result_path = document_to_markdown(doc_path, self.markdown_dir)
+                    if not result_path:
+                        skipped += 1
+                        continue
+
+                # Process the markdown file
                 parent_chunks, child_chunks = self.rag_system.chunker.create_chunks_single(md_path)
-                
+
                 if not child_chunks:
                     skipped += 1
                     continue
-                
+
+                # Add to vector database and parent store
                 collection = self.rag_system.vector_db.get_collection(self.rag_system.collection_name)
                 collection.add_documents(child_chunks)
                 self.rag_system.parent_store.save_many(parent_chunks)
-                
+
                 added += 1
-                
+
             except Exception as e:
                 print(f"Error processing {doc_path}: {e}")
                 skipped += 1
-            
+
         return added, skipped
     
     def get_markdown_files(self):
